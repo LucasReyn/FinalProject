@@ -1,15 +1,17 @@
 #include <reg932.h>
 
-
-
 sbit tetris = P2^0;
 sbit sponge = P0^2;
-sbit keybrd = P2^5;
+sbit piano = P2^5;
 
 void main() 
 {
-  TMOD = 0x22;
-  IE = 0x88;
+  P2M1 = 0x00;
+  P1M1 = 0x00;
+  P0M1 = 0x00;
+
+  TMOD = 0x11;
+  IEN1 = 0x88;
 
   while(1);
   {
@@ -29,9 +31,9 @@ void main()
     }
     if (keybrd == 0)
     {
-      while (keybrd == 0 && tetris == 1 && sponge = 1)
+      while (tetris == 1 && sponge == 1)
       {
-        KEYBRD();
+        PIANO();
       }
     }
   }
