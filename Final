@@ -4,6 +4,77 @@ sbit tetris = P2^0;
 sbit sponge = P0^2;
 sbit piano = P2^5;
 
+sbit sw1 = P2^1;
+sbit sw2 = P0^3;
+sbit sw3 = P2^2;
+sbit wave = P1^7;
+sbit LED1 = P2^5;
+sbit LED2 = P0^7;
+sbit LED3 = P2^6;
+
+#define note_A4 4189
+#define note_C5 3523
+#define note_D5 3135
+
+void  TIMR1Delay(int interval);
+void playNote(int note);
+void piano();
+
+void TIMR1Delay(int interval)
+{
+	TMOD = 0x10;
+	TH1 = -interval >> 8;
+	TL1 = -interval;
+
+	while(!TF1)
+
+	TR1 = 1;
+	TF1 = 0;
+}
+
+void playNote(int note)
+{
+	wave = ~wave;
+	TIMR1Delay(note);
+}
+
+void piano()
+{
+	if(sw1 == 0)
+	{
+		LED1 = 0;
+		while(sw1 == 0)
+		{
+			playNote(note_A4);
+		}
+		LED1 = 1;
+	}
+
+	if(sw2 == 0)
+	{
+		LED2 = 0;
+		while(sw2 == 0)
+		{
+			playNote(note_C5);
+		}
+		LED2 = 1;
+	}
+
+	if(sw3 == 0)
+	{
+		LED3 = 0;
+		while(sw3 == 0)
+		{
+			playNote(note_D5);
+		}
+		LED3 = 1;
+	}
+}
+
+
+
+
+
 void main() 
 {
   P2M1 = 0x00;
