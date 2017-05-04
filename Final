@@ -1,3 +1,38 @@
 #include <reg932.h>
 
-// https://github.com/LucasReyn/FinalProject/invitations
+
+
+sbit tetris = P2^0;
+sbit sponge = P0^2;
+sbit keybrd = P2^5;
+
+void main() 
+{
+  TMOD = 0x22;
+  IE = 0x88;
+
+  while(1);
+  {
+    if (tetris == 0)
+    {
+      while (tetris == 0 && sponge == 1 && keybrd == 1)
+      {
+        TETRIS();
+      }
+    }
+    if (sponge == 0)
+    {
+      while (sponge == 0 && tetris == 1 && keybrd == 1)
+      {
+        SPONGE();
+      }
+    }
+    if (keybrd == 0)
+    {
+      while (keybrd == 0 && tetris == 1 && sponge = 1)
+      {
+        KEYBRD();
+      }
+    }
+  }
+}
