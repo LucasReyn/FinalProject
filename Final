@@ -22,6 +22,11 @@ sbit LED3 = P2^6;
 #define note_F3 10556
 #define note_D4b 6650
 #define note_D4# 5924 
+#define note_A5 2095 
+#define note_B5 1866
+#define note_C6 1761
+#define note_D6 1569
+#define note_E6 1398
 
 unsigned int quarterNote;
 unsigned int wholeNote;
@@ -35,6 +40,8 @@ void playNote(int note);
 void piano();
 void display();
 void uart_transmit(char c);
+void playnotetime(int note,int n);
+void tetris();
 
 void setTempo(unsigned int tempo)
 {
@@ -153,6 +160,27 @@ void uart_transmit(char c)
   while(mtxbusy);
   mtxbusy = 1;
   SBUF = c;
+}
+
+void tetris(){
+	playnotetime(note_E6, 2639);
+	playnotetime(note_B5, 1976);
+	playnotetime(note_C6, 2217);
+	playnotetime(note_D6, 2347);
+	playnotetime(note_C6, 2217);
+	playnotetime(note_B5, 1976);
+	playnotetime(note_A5, 1761);
+	playnotetime(note_A5, 1761);
+	playnotetime(note_C6, 2217);
+	playnotetime(note_E6, 2693);
+	
+}
+
+void playnotetime(int note, int n)
+{
+unsigned int i;
+for (i = 0; i < n; i++)
+	playNote(note);
 }
 
 
