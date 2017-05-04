@@ -17,14 +17,14 @@ void main()
   {
     if (tetris == 0)
     {
-      while (tetris == 0 && sponge == 1 && keybrd == 1)
+      while (tetris == 0 && sponge == 1 && piano == 1)
       {
         TETRIS();
       }
     }
     if (sponge == 0)
     {
-      while (sponge == 0 && tetris == 1 && keybrd == 1)
+      while (sponge == 0 && tetris == 1 && piano == 1)
       {
         SPONGE();
       }
