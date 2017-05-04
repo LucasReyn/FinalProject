@@ -221,3 +221,35 @@ void main()
     }
   }
 }
+
+void spongebob()
+{
+	setTempo(120);
+
+	playnotetime(note_D4b, quarternote);
+	playnotetime(note_D4b, quarternote);
+	playnotetime(note_D4b, quarternote);
+	playnotetime(note_D4, eighthnote);
+	playnotetime(note_C4, eighthnote);
+	playnotetime(note_D4#, eighthnote);
+	playnotetime(note_C4, eighthnote);
+	playnotetime(note_A4, eighthnote);
+	playnotetime(note_F3, eighthnote);
+	playnotetime(note_A4, eighthnote);
+	playnotetime(note_C4, eighthnote);
+	playnotetime(note_D4, eighthnote);
+	playnotetime(note_C4, eighthnote);
+	playnotetime(note_A4, quarternote);
+	playnotetime(note_F4, eighthnote);
+	playnotetime(note_E4, eighthnote);
+	playnotetime(note_F4, eighthnote);
+	playnotetime(note_D4, eighthnote);
+	playnotetime(note_C4, eighthnote);
+	playnotetime(note_D4, eighthnote);
+	playnotetime(note_C4, eighthnote);
+	playnotetime(note_A4, eighthnote);
+	playnotetime(note_F4, eighthnote);
+	playnotetime(note_A4, eighthnote);
+	playnotetime(note_F4, eighthnote);
+}
+
