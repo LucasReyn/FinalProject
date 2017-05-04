@@ -36,3 +36,63 @@ void main()
     }
   }
 }
+
+
+void display()
+{
+
+	uart_init();
+
+	while (1)
+        {
+         if (tetris == 0)
+          {
+            uart_transmit('T');
+            uart_transmit('e');
+	          uart_transmit('t');
+            uart_transmit('r');
+            uart_transmit('i');
+            uart_transmit('s');
+	          while (tetris==0);
+
+          }
+
+	 if (sponge == 0)
+	  {
+            uart_transmit('S');
+            uart_transmit('p');
+	          uart_transmit('o');
+            uart_transmit('n');
+            uart_transmit('g');
+            uart_transmit('e');
+            uart_transmit('B');
+            uart_transmit('o');
+            uart_transmit('b');
+            
+            uart_transmit(' ');
+
+            uart_transmit('S');
+            uart_transmit('q');
+            uart_transmit('u');
+            uart_transmit('a');
+            uart_transmit('r');
+            uart_transmit('e');
+            uart_transmit('p');
+            uart_transmit('a');
+            uart_transmit('n');
+            uart_transmit('t');
+            uart_transmit('s');
+	          while (sponge==0);
+
+          }
+   
+        }	 
+
+}
+
+void uart_transmit(char c)
+{
+  while(mtxbusy);
+  mtxbusy = 1;
+  SBUF = c;
+}
