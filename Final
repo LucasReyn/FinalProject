@@ -23,11 +23,27 @@ sbit LED3 = P2^6;
 #define note_D4b 6650
 #define note_D4# 5924 
 
+unsigned int quarterNote;
+unsigned int wholeNote;
+unsigned int halfNote;
+unsigned int eighthNote;
+
+
+void setTempo(unsigned int tempo);
 void  TIMR1Delay(int interval);
 void playNote(int note);
 void piano();
 void display();
 void uart_transmit(char c);
+
+void setTempo(unsigned int tempo)
+{
+	quarterNote = (1/(tempo/60))*(2/7373000);
+	wholeNote = 4*quarterNote;
+	halfNote = 2*quarterNote;
+	eighthNote = quarterNote/2;
+{
+
 
 void TIMR1Delay(int interval)
 {
