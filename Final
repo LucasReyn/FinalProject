@@ -19,6 +19,8 @@ sbit LED3 = P2^6;
 void  TIMR1Delay(int interval);
 void playNote(int note);
 void piano();
+void display();
+void uart_transmit(char c);
 
 void TIMR1Delay(int interval)
 {
@@ -75,40 +77,6 @@ void piano()
 
 
 
-void main() 
-{
-  P2M1 = 0x00;
-  P1M1 = 0x00;
-  P0M1 = 0x00;
-
-  TMOD = 0x11;
-  IEN1 = 0x88;
-
-  while(1);
-  {
-    if (tetris == 0)
-    {
-      while (tetris == 0 && sponge == 1 && piano == 1)
-      {
-        tetris();
-      }
-    }
-    if (sponge == 0)
-    {
-      while (sponge == 0 && tetris == 1 && piano == 1)
-      {
-        sponge();
-      }
-    }
-    if (keybrd == 0)
-    {
-      while (tetris == 1 && sponge == 1)
-      {
-        piano();
-      }
-    }
-  }
-}
 
 
 void display()
@@ -168,4 +136,43 @@ void uart_transmit(char c)
   while(mtxbusy);
   mtxbusy = 1;
   SBUF = c;
+}
+
+
+
+void main() 
+{
+  P2M1 = 0x00;
+  P1M1 = 0x00;
+  P0M1 = 0x00;
+
+  TMOD = 0x11;
+  IEN1 = 0x88;
+
+  while(1);
+  {
+    if (tetris == 0)
+    {
+      while (tetris == 0 && sponge == 1 && piano == 1)
+      {
+        display();
+        tetris();
+      }
+    }
+    if (sponge == 0)
+    {
+      while (sponge == 0 && tetris == 1 && piano == 1)
+      {
+      	display();
+        sponge();
+      }
+    }
+    if (keybrd == 0)
+    {
+      while (tetris == 1 && sponge == 1)
+      {
+        piano();
+      }
+    }
+  }
 }
