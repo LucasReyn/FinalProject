@@ -28,8 +28,10 @@ sbit LED3 = P2^6;
 #define note_D6 1569
 #define note_E6 1398
 
+int globalNote;
 
 void playNote(int note);
+void stopNote();
 void piano();
 void display();
 void uart_transmit(char c);
@@ -38,48 +40,53 @@ void tetris();
 
 void TIMR1ISR() interrupt 3
 {
+	TR1 = 0;
 	wave = ~wave;
+	TH1 = -(globalNote>>8);
+	TL1 = -globalNote;
+	TF1 = 0;
+	TR1 = 1;
 }
 
 void playNote(int note)
 {
+	IEN0 = 0x8A;
 	TMOD = 0x10;
-	TH1 = (-note)>>8;
+	globalNote = note;
+	TH1 = -(note>>8);
 	TL1 = -note;
 	TR1 = 1;
+}
+
+
+void stopNote()
+{
+	IEN0 = 0x00;
+	TR1 = 0;
+	TF1 = 0;
+	wave = 1;
 }
 
 void piano()
 {
 	if(sw1 == 0)
 	{
-		LED1 = 0;
-		while(sw1 == 0)
-		{
-			playNote(note_A4);
-		}
-		LED1 = 1;
+		playNote(note_A4);
+		while(sw1 == 0);
 	}
-
 	if(sw2 == 0)
 	{
-		LED2 = 0;
-		while(sw2 == 0)
-		{
-			playNote(note_C5);
-		}
-		LED2 = 1;
+		playNote(note_C5);
+		while(sw2 == 0);
 	}
 
 	if(sw3 == 0)
 	{
-		LED3 = 0;
-		while(sw3 == 0)
-		{
-			playNote(note_D5);
-		}
-		LED3 = 1;
+		playNote(note_D5);
+		while(sw3 == 0);
 	}
+	else
+		stopNote();
 }
 
 void display()
