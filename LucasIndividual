@@ -1,8 +1,7 @@
 #include <reg932.h>
+sbit beats = PX^X;
 
-sbit wave = P1^7;
 
- void spongebob();
 
 if (beats == 0)
 {
