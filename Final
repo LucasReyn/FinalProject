@@ -12,21 +12,23 @@ sbit LED1 = P2^5;
 sbit LED2 = P0^7;
 sbit LED3 = P2^6;
 
-#define note_A4 4189
-#define note_C5 3523
-#define note_D5 3135
-#define note_C4 7045
-#define note_D4 6277
-#define note_E4 5592
-#define note_F4 5278
-#define note_F3 10556
-#define note_D4b 6650
-#define note_D4s 5924 
-#define note_A5 2095 
-#define note_B5 1866
-#define note_C6 1761
-#define note_D6 1569
-#define note_E6 1398
+#define note_A4 2095
+#define note_C5 1761
+#define note_D5 1569
+#define note_C4 3523
+#define note_D4 3138
+#define note_E4 2796
+#define note_F4 2639
+#define note_F3 5278
+#define note_D4b 3325
+#define note_D4s 2962
+#define note_A5 1047
+#define note_B5 933
+#define note_C6 881
+#define note_D6 785
+#define note_E6 699
+#define note_B3 3954
+#define note_A3 4189
 
 int globalNote;
 
@@ -191,35 +193,32 @@ void uart_transmit(char c)
 }
 
 void tetris(){
-	playnotetime(note_E6, 2639);
-	playnotetime(note_B5, 1976);
-	playnotetime(note_C6, 2217);
-	playnotetime(note_D6, 2347);
-	playnotetime(note_C6, 2217);
-	playnotetime(note_B5, 1976);
-	playnotetime(note_A5, 1761);
-	playnotetime(note_A5, 1761);
-	playnotetime(note_C6, 2217);
-	playnotetime(note_E6, 2693);
+	playnotetime(note_E4, 3*eighthNote);
+	playnotetime(note_B3, eighthNote);
+	playnotetime(note_C4, quarterNote);
+	playnotetime(note_D4, eighthNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_B3, 3*eighthNote);
+	playnotetime(note_A3, eighthNote);
+	playnotetime(note_A3, quarterNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_E4, eighthNote);
+	
 	
 }
 
 void playnotetime(int note, unsigned int n)
 {
-  playnote(note);
-  Notedelay(n);
+  unsigned int z = n;
+  int i;
+  playNote(note);
+  LED1 = 0;
+  while(z-- > 0)
+  {
+	for(i = 0; i < 250; i++);
+  }
+  LED1 = 1;
   stopNote();
-}
-
-void noteDelay(unsigned int interval)
-{
-  TMOD = 0x01;
-  TL0 = - interval;
-  TH0 = - (interval >> 8);
-  TR0 = 1;
-  while(TF0 == 0);
-  TRO = 0;
-  TF0 = 0;
 }
 
 void main() 
@@ -262,7 +261,6 @@ void main()
 void spongebob()
 {
 	setTempo(120);
-
 	playnotetime(note_D4b, quarterNote);
 	playnotetime(note_D4b, quarterNote);
 	playnotetime(note_D4b, quarterNote);
@@ -270,13 +268,13 @@ void spongebob()
 	playnotetime(note_C4, eighthNote);
 	playnotetime(note_D4s, eighthNote);
 	playnotetime(note_C4, eighthNote);
-	playnotetime(note_A4, eighthNote);
+	playnotetime(note_A3, eighthNote);
 	playnotetime(note_F3, eighthNote);
-	playnotetime(note_A4, eighthNote);
+	playnotetime(note_A3, eighthNote);
 	playnotetime(note_C4, eighthNote);
 	playnotetime(note_D4, eighthNote);
 	playnotetime(note_C4, eighthNote);
-	playnotetime(note_A4, quarterNote);
+	playnotetime(note_A3, quarterNote);
 	playnotetime(note_F4, eighthNote);
 	playnotetime(note_E4, eighthNote);
 	playnotetime(note_F4, eighthNote);
@@ -284,17 +282,17 @@ void spongebob()
 	playnotetime(note_C4, eighthNote);
 	playnotetime(note_D4, eighthNote);
 	playnotetime(note_C4, eighthNote);
-	playnotetime(note_A4, eighthNote);
+	playnotetime(note_A3, eighthNote);
 	playnotetime(note_F4, eighthNote);
-	playnotetime(note_A4, eighthNote);
+	playnotetime(note_A3, eighthNote);
 	playnotetime(note_F4, eighthNote);
 }
 
-void setTempo(unsigned int Tempo)
+void setTempo()
 {
-  quarterNote = ((60/Tempo) * 7373000) / 2;
   wholeNote = 4 * quarterNote;
   halfNote = 2 * quarterNote;
   eighthNote = quarterNote / 2;
  }
- 
+
+
