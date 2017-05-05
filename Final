@@ -176,7 +176,7 @@ void tetris(){
 	
 }
 
-void playnotetime(int note, int n)
+void playnotetime(int note, unsigned int n)
 {
 unsigned int i;
 for (i = 0; i < n; i++)
