@@ -30,6 +30,11 @@ sbit LED3 = P2^6;
 #define note_B3 3954
 #define note_A3 4189
 
+unsigned int quarterNote = 450;
+unsigned int wholeNote;
+unsigned int halfNote;
+unsigned int eighthNote;
+unsigned int note_test;
 int globalNote;
 
 void playNote(int note);
