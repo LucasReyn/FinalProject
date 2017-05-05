@@ -28,15 +28,7 @@ sbit LED3 = P2^6;
 #define note_D6 1569
 #define note_E6 1398
 
-unsigned int quarterNote;
-unsigned int wholeNote;
-unsigned int halfNote;
-unsigned int eighthNote;
 
-
-void setTempo(unsigned int tempo);
-void TIMR1ISR() interrupt 3;
-//void TIMR1Delay(int interval);
 void playNote(int note);
 void piano();
 void display();
@@ -44,42 +36,9 @@ void uart_transmit(char c);
 void playnotetime(int note,int n);
 void tetris();
 
-void setTempo(unsigned int tempo)
-{
-	quarterNote = (1/(tempo/60))*(2/7373000);
-	wholeNote = 4*quarterNote;
-	halfNote = 2*quarterNote;
-	eighthNote = quarterNote/2;
-{
-
-void TIMR1ISR() interrupt 3
-{
-	wave = ~wave;
-	TF1 = 0;
-}
-
-/*
-void TIMR1Delay(int interval)
-{
-	TMOD = 0x10;
-	TH1 = -interval >> 8;
-	TL1 = -interval;
-
-	while(!TF1)
-
-	TR1 = 1;
-	TF1 = 0;
-}*/
 
 void playNote(int note)
 {
-	//wave = ~wave;
-	//TIMR1Delay(note);
-	TMOD = 0x10;
-	TH1 = -note >> 8;
-	TL1 = -note;
-	TF1 = 0;
-	TR1 = 1;
 }
 
 void piano()
@@ -228,19 +187,9 @@ void tetris(){
 	
 }
 
-/*
 void playnotetime(int note, unsigned int n)
 {
-unsigned int i;
-for (i = 0; i < n; i++)
-	playNote(note);
-}*/
 
-void playnotetime(int note, unsigned int n)
-{
-	unsigned int i;
-	playNote(note);
-	for(i = 0; i<n; i++);
 }
 
 
