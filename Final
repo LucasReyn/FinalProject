@@ -35,7 +35,8 @@ unsigned int eighthNote;
 
 
 void setTempo(unsigned int tempo);
-void  TIMR1Delay(int interval);
+void TIMR1ISR() interrupt 3;
+//void TIMR1Delay(int interval);
 void playNote(int note);
 void piano();
 void display();
@@ -51,7 +52,13 @@ void setTempo(unsigned int tempo)
 	eighthNote = quarterNote/2;
 {
 
+void TIMR1ISR() interrupt 3
+{
+	wave = ~wave;
+	TF1 = 0;
+}
 
+/*
 void TIMR1Delay(int interval)
 {
 	TMOD = 0x10;
@@ -62,12 +69,17 @@ void TIMR1Delay(int interval)
 
 	TR1 = 1;
 	TF1 = 0;
-}
+}*/
 
 void playNote(int note)
 {
-	wave = ~wave;
-	TIMR1Delay(note);
+	//wave = ~wave;
+	//TIMR1Delay(note);
+	TMOD = 0x10;
+	TH1 = -note >> 8;
+	TL1 = -note;
+	TF1 = 0;
+	TR1 = 1;
 }
 
 void piano()
@@ -176,11 +188,19 @@ void tetris(){
 	
 }
 
+/*
 void playnotetime(int note, unsigned int n)
 {
 unsigned int i;
 for (i = 0; i < n; i++)
 	playNote(note);
+}*/
+
+void playnotetime(int note, unsigned int n)
+{
+	unsigned int i;
+	playNote(note);
+	for(i = 0; i<n; i++);
 }
 
 
