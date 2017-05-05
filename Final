@@ -21,7 +21,7 @@ sbit LED3 = P2^6;
 #define note_F4 5278
 #define note_F3 10556
 #define note_D4b 6650
-#define note_D4# 5924 
+#define note_D4s 5924 
 #define note_A5 2095 
 #define note_B5 1866
 #define note_C6 1761
@@ -251,7 +251,7 @@ void spongebob()
 	playnotetime(note_D4b, quarterNote);
 	playnotetime(note_D4, eighthNote);
 	playnotetime(note_C4, eighthNote);
-	playnotetime(note_D4#, eighthNote);
+	playnotetime(note_D4s, eighthNote);
 	playnotetime(note_C4, eighthNote);
 	playnotetime(note_A4, eighthNote);
 	playnotetime(note_F3, eighthNote);
