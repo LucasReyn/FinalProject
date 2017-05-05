@@ -37,6 +37,8 @@ void display();
 void uart_transmit(char c);
 void playnotetime(int note,int n);
 void tetris();
+voi noteDelay(unsigned int interval);
+void setTempo(unsigned int Tempo);
 
 void TIMR1ISR() interrupt 3
 {
@@ -204,10 +206,12 @@ void tetris(){
 
 void playnotetime(int note, unsigned int n)
 {
-
+  playnote(note);
+  Notedelay(n);
+  stopNote();
 }
 
-NoteDelay(unsigned int interval)
+void noteDelay(unsigned int interval)
 {
   TMOD = 0x01;
   TL0 = - interval;
@@ -286,5 +290,11 @@ void spongebob()
 	playnotetime(note_F4, eighthNote);
 }
 
-
-
+void setTempo(unsigned int Tempo)
+{
+  quarterNote = ((60/Tempo) * 7373000) / 2;
+  wholeNote = 4 * quarterNote;
+  halfNote = 2 * quarterNote;
+  eighthNote = quarterNote / 2;
+ }
+ 
