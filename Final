@@ -226,30 +226,32 @@ void spongebob()
 {
 	setTempo(120);
 
-	playnotetime(note_D4b, quarternote);
-	playnotetime(note_D4b, quarternote);
-	playnotetime(note_D4b, quarternote);
-	playnotetime(note_D4, eighthnote);
-	playnotetime(note_C4, eighthnote);
-	playnotetime(note_D4#, eighthnote);
-	playnotetime(note_C4, eighthnote);
-	playnotetime(note_A4, eighthnote);
-	playnotetime(note_F3, eighthnote);
-	playnotetime(note_A4, eighthnote);
-	playnotetime(note_C4, eighthnote);
-	playnotetime(note_D4, eighthnote);
-	playnotetime(note_C4, eighthnote);
-	playnotetime(note_A4, quarternote);
-	playnotetime(note_F4, eighthnote);
-	playnotetime(note_E4, eighthnote);
-	playnotetime(note_F4, eighthnote);
-	playnotetime(note_D4, eighthnote);
-	playnotetime(note_C4, eighthnote);
-	playnotetime(note_D4, eighthnote);
-	playnotetime(note_C4, eighthnote);
-	playnotetime(note_A4, eighthnote);
-	playnotetime(note_F4, eighthnote);
-	playnotetime(note_A4, eighthnote);
-	playnotetime(note_F4, eighthnote);
+	playnotetime(note_D4b, quarterNote);
+	playnotetime(note_D4b, quarterNote);
+	playnotetime(note_D4b, quarterNote);
+	playnotetime(note_D4, eighthNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_D4#, eighthNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_A4, eighthNote);
+	playnotetime(note_F3, eighthNote);
+	playnotetime(note_A4, eighthNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_D4, eighthNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_A4, quarterNote);
+	playnotetime(note_F4, eighthNote);
+	playnotetime(note_E4, eighthNote);
+	playnotetime(note_F4, eighthNote);
+	playnotetime(note_D4, eighthNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_D4, eighthNote);
+	playnotetime(note_C4, eighthNote);
+	playnotetime(note_A4, eighthNote);
+	playnotetime(note_F4, eighthNote);
+	playnotetime(note_A4, eighthNote);
+	playnotetime(note_F4, eighthNote);
 }
+
+
 
