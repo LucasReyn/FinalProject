@@ -167,6 +167,46 @@ void display()
 
 }
 
+void uart_init
+  (
+  void
+  )
+{
+  // configure UART
+  // clear SMOD0
+  PCON &= ~0x40;
+  SCON = 0x50;
+  // set or clear SMOD1
+  PCON &= 0x7f;
+  PCON |= (0 << 8);
+  SSTAT = 0x00;
+
+  // enable break detect
+  AUXR1 |= 0x40;
+
+  // configure baud rate generator
+  BRGCON = 0x00;
+  BRGR0 = 0xF0;
+  BRGR1 = 0x02;                      //BRGR0 and BRGR1 were
+  BRGCON = 0x03;                     //changed to set the baud rate to 9600
+
+  // TxD = push-pull, RxD = input
+  P1M1 &= ~0x01;
+  P1M2 |= 0x01;
+  P1M1 |= 0x02;
+  P1M2 &= ~0x02;
+
+  // initially not busy
+  mtxbusy = 0;
+
+  // set isr priority to 0
+  IP0 &= 0xEF;
+  IP0H &= 0xEF;
+  // enable uart interrupt
+  ES = 1;
+
+} // uart_init
+
 void uart_transmit(char c)
 {
   while(mtxbusy);
