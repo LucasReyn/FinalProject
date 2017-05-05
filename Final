@@ -207,7 +207,16 @@ void playnotetime(int note, unsigned int n)
 
 }
 
-
+NoteDelay(unsigned int interval)
+{
+  TMOD = 0x01;
+  TL0 = - interval;
+  TH0 = - (interval >> 8);
+  TR0 = 1;
+  while(TF0 == 0);
+  TRO = 0;
+  TF0 = 0;
+}
 
 void main() 
 {
