@@ -36,6 +36,7 @@ unsigned int halfNote;
 unsigned int eighthNote;
 unsigned int note_test;
 int globalNote;
+static bit mtxbusy;
 char globalCount; // for piano chord selection
 
 void playNote(int note);
@@ -228,6 +229,52 @@ void uart_init
   ES = 1;
 
 } // uart_init
+
+void delay(long x)
+{	
+	long i= 0;
+	for(i;i<x;i++);
+
+}
+
+void uart_isr(void) interrupt 4 using 1
+{
+  if (RI)
+  {
+            // PUT CODE THAT EXECUTES WHEN RECEIVING A BYTE HERE
+	 char letter = uart_get();
+     if (letter == 's')
+	  {
+        spongebob();
+	  }
+
+	  if (letter == 't')
+	  {
+        tetris();
+	  }	  
+     
+    // clear interrupt flag
+    RI = 0;
+  } // if
+
+  if (TI)
+  {
+    // clear interrupt flag
+    TI = 0;
+    // no longer busy
+    mtxbusy = 0;
+  } // if
+
+} // uart_isr
+ 
+
+unsigned char uart_get   
+(  
+ void   
+) 
+{   
+return SBUF; 
+} // uart_get
 
 void uart_transmit(char c)
 {
