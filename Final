@@ -36,6 +36,7 @@ unsigned int halfNote;
 unsigned int eighthNote;
 unsigned int note_test;
 int globalNote;
+char globalCount; // for piano chord selection
 
 void playNote(int note);
 void stopNote();
@@ -78,21 +79,59 @@ void stopNote()
 
 void piano()
 {
+	unsigned int mod1;
+	unsigned int mod2;
+	unsigned int mod3;
+	if(swMid == 0)
+	{
+		if(globalCount == 0)
+		{
+			LED4 = ~LED4;
+			mod1+= 256; // changes A4 to G4
+			mod2+= 216; // changes C4 to A4#
+			mod3+= 192; // changes D5 to C5
+			globalCount++;
+		}
+		else if(globalCount < 4)
+		{
+			LED5 = ~LED5;
+			mod1 += 3000;
+			mod2 += 4000;
+			mod3 += 5000;
+			globalCount++;
+		}
+		else
+		{
+			LED4 = 1;
+			LED5 = 1;
+			mod1 = 0;
+			mod2 = 0;
+			mod3 = 0;
+			globalCount = 0;
+		}
+		while(swMid == 0);
+	}
 	if(sw1 == 0)
 	{
-		playNote(note_A4);
+		LED1 = 0;
+		playNote(note_A4+mod1);
 		while(sw1 == 0);
+		LED1 = 1;
 	}
 	if(sw2 == 0)
 	{
-		playNote(note_C5);
+		LED2 = 0;
+		playNote(note_C5+mod2);
 		while(sw2 == 0);
+		LED2 = 1;
 	}
 
 	if(sw3 == 0)
 	{
-		playNote(note_D5);
+		LED3 = 0;
+		playNote(note_D5+mod3);
 		while(sw3 == 0);
+		LED3 = 1;
 	}
 	else
 		stopNote();
