@@ -137,7 +137,6 @@ void piano()
 	else
 		stopNote();
 }
-
 void display()
 {
 
@@ -168,9 +167,7 @@ void display()
             uart_transmit('B');
             uart_transmit('o');
             uart_transmit('b');
-            
             uart_transmit(' ');
-
             uart_transmit('S');
             uart_transmit('q');
             uart_transmit('u');
@@ -182,7 +179,76 @@ void display()
             uart_transmit('n');
             uart_transmit('t');
             uart_transmit('s');
-	          while (sponge==0);
+
+            delay(20000);
+            
+            uart_transmit('O');
+            uart_transmit('h');
+	    uart_transmit('!');
+            uart_transmit(' ');
+            uart_transmit('W');
+            uart_transmit('h');
+            uart_transmit('o');
+            uart_transmit('');
+            uart_transmit('l');
+            uart_transmit('i');
+            uart_transmit('v');
+	    uart_transmit('e');
+            uart_transmit('s');
+            uart_transmit(' ');
+            uart_transmit('i');
+            uart_transmit('n');
+            uart_transmit(' ');
+            uart_transmit('a');
+            uart_transmit(' ');
+            uart_transmit('p');
+	    uart_transmit('i');
+            uart_transmit('n');
+            uart_transmit('e');
+            uart_transmit('a');
+            uart_transmit('p');
+            uart_transmit('p');
+            uart_transmit('l');
+            uart_transmit('e');
+            uart_transmit(' ');
+	    uart_transmit('u');
+            uart_transmit('n');
+            uart_transmit('d');
+            uart_transmit('e');
+            uart_transmit('r');
+            uart_transmit(' ');
+            uart_transmit('t');
+            uart_transmit('h');
+            uart_transmit('e');
+	    uart_transmit(' ');
+            uart_transmit('s');
+            uart_transmit('e');
+            uart_transmit('a');
+            uart_transmit(' ');
+            uart_transmit('S');
+            uart_transmit('p');
+	    uart_transmit('o');
+            uart_transmit('n');
+            uart_transmit('g');
+            uart_transmit('e');
+            uart_transmit('B');
+            uart_transmit('o');
+            uart_transmit('b');
+            uart_transmit(' ');
+            uart_transmit('S');
+            uart_transmit('q');
+            uart_transmit('u');
+            uart_transmit('a');
+            uart_transmit('r');
+            uart_transmit('e');
+            uart_transmit('p');
+            uart_transmit('a');
+            uart_transmit('n');
+            uart_transmit('t');
+            uart_transmit('s');
+
+           
+	    while (sponge==0);
 
           }
    
