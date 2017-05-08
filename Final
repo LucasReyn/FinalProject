@@ -82,7 +82,7 @@ void main()
   P0M1 = 0x00;
   IEN0 = 0x8A;
   inc = 0;
-  while(1)
+  while(1) //checks for button continously
   {
   	LED1 = 1;
 	LED2 = 1;
@@ -94,7 +94,7 @@ void main()
 	LED8 = 1;
 	LED9 = 1;
     
-	if (~beats)
+	if (~beats) //checks for change in speed button
     {
 
 			if (inc == 0)
@@ -123,24 +123,25 @@ void main()
 	  
 	}
 
-  	if(~tetr)
+  	if(~tetr) //checks for tetris button 
 	{
 		
 		display();
-		testLED = 0;
+
 		tetris();
 	}
 
-	if(~sponge)
+	if(~sponge) // checks for spongebob song button
 	{
 		display();
-		testLED = 0;
+
 		spongebob();
 	}
   	piano();
   }
 }
 
+//timer 1 interrupt routine for note frequency
 void TIMR1ISR() interrupt 3
 {
 	TR1 = 0;
@@ -151,6 +152,7 @@ void TIMR1ISR() interrupt 3
 	TR1 = 1;
 }
 
+//plays note based on frequency given
 void playNote(int note)
 {
 	IEN0 = 0x8A;
@@ -161,7 +163,7 @@ void playNote(int note)
 	TR1 = 1;
 }
 
-
+//stops any note playing
 void stopNote()
 {
 	IEN0 = 0x00;
@@ -170,6 +172,7 @@ void stopNote()
 	wave = 1;
 }
 
+//plays notes using buttons
 void piano()
 {
 	unsigned int mod1;
@@ -229,6 +232,8 @@ void piano()
 	else
 		stopNote();
 }
+
+//display the title of each song and the lyrics for spongebob theme
 void display()
 {
 
@@ -388,6 +393,7 @@ void uart_init
 
 } // uart_init
 
+//delay in between spongebob title and lyrics
 void delay(long x)
 {	
 	long i= 0;
@@ -441,6 +447,9 @@ void uart_transmit(char c)
   SBUF = c;
 }
 
+//function that calls playnottime multiple times 
+//to play the each note for a duration of the tetris theme song
+//turns on LED per each note
 void tetris()
 {
 	LED1 = 1;
@@ -590,7 +599,7 @@ void tetris()
 	LED3 = 0;	
 }
 
-//
+//plays a note with the duration given 
 void playnotetime(int note, unsigned int n)
 {
   unsigned int z = n;
@@ -603,7 +612,9 @@ void playnotetime(int note, unsigned int n)
   stopNote();
 }
 
-
+//function that calls playnottime multiple times 
+//to play the each note for a duration of the spongebob theme song
+//turns on LED per each note
 void spongebob()
 {
 
@@ -725,7 +736,7 @@ void spongebob()
 	playnotetime(note_F4, eighthNote);
 	LEDf = 1;
 }
-
+// set tempo function that changes the note duration based on speed given
 void setTempo()
 {
   wholeNote = 4 * quarterNote;
@@ -733,6 +744,7 @@ void setTempo()
   eighthNote = quarterNote / 2;
 }
 
+//display if the song will go faster, slower, or normal
 void displayBPM()
 {
  
