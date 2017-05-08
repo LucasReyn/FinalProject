@@ -96,25 +96,25 @@ void main()
 			{
 				displayBPM(); // display normal
 				quarterNote = 450; // quarternote at normal speed
-				setTempo(); // 
+				setTempo(); // resets tempo
 				inc++;
 
 			}
 			else if ( inc == 1)
 			{
-				displayBPM();
-				quarterNote = 900;
-				setTempo();
+				displayBPM(); // display slower
+				quarterNote = 900; // quarternote is slwoer
+				setTempo(); //resets tempo
 				inc++;
 			}
 			else if (inc == 2)
 			{
-				displayBPM();
-				quarterNote = 300;
-				setTempo();
-				inc = 0;
+				displayBPM(); // display faster
+				quarterNote = 300; // quarternote is faster
+				setTempo(); // resets tempo
+				inc = 0; // makes inc reset to 0
 			}
-		   while (~beats);
+		   while (~beats); // checks for beat button value
 	  
 	}
 
