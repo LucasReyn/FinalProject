@@ -1,16 +1,21 @@
 #include <reg932.h>
 
-sbit tetris = P2^0;
+sbit tetr = P2^0;
 sbit sponge = P0^2;
-sbit piano = P2^5;
+sbit pia = P2^5;
 
 sbit sw1 = P2^1;
 sbit sw2 = P0^3;
 sbit sw3 = P2^2;
+sbit swMid = P1^4;
 sbit wave = P1^7;
 sbit LED1 = P2^5;
 sbit LED2 = P0^7;
 sbit LED3 = P2^6;
+sbit LED4 = P1^6;
+sbit LED5 = P0^4;
+static bit mtxbusy;
+sbit testLED = P2^7;
 
 #define note_A4 2095
 #define note_C5 1761
@@ -35,10 +40,10 @@ unsigned int wholeNote;
 unsigned int halfNote;
 unsigned int eighthNote;
 unsigned int note_test;
-int globalNote;
-static bit mtxbusy;
+int globalNote = 0;
 char globalCount; // for piano chord selection
 
+void spongebob();
 void playNote(int note);
 void stopNote();
 void piano();
@@ -46,8 +51,38 @@ void display();
 void uart_transmit(char c);
 void playnotetime(int note,int n);
 void tetris();
-voi noteDelay(unsigned int interval);
-void setTempo(unsigned int Tempo);
+void setTempo();
+unsigned char uart_get(void);
+void uart_init(void);
+void delay(long x);
+
+void main()
+{
+  P2M1 = 0x00;
+  P1M1 = 0x00;
+  P0M1 = 0x00;
+  IEN0 = 0x8A;
+  
+  while(1)
+  {
+    
+  	if(~tetr)
+	{
+		
+		display();
+		testLED = 0;
+		tetris();
+	}
+
+	if(~sponge)
+	{
+		display();
+		testLED = 0;
+		spongebob();
+	}
+  	piano();
+  }
+}
 
 void TIMR1ISR() interrupt 3
 {
@@ -142,25 +177,23 @@ void display()
 
 	uart_init();
 
-	while (1)
-        {
-         if (tetris == 0)
-          {
-            uart_transmit('T');
-            uart_transmit('e');
-	          uart_transmit('t');
-            uart_transmit('r');
-            uart_transmit('i');
-            uart_transmit('s');
-	          while (tetris==0);
 
-          }
-
+        
+    if (tetr == 0)
+    {
+        uart_transmit('T');
+        uart_transmit('e');
+	    uart_transmit('t');
+        uart_transmit('r');
+        uart_transmit('i');
+        uart_transmit('s');
+	    while (tetr==0);
+     }
 	 if (sponge == 0)
 	  {
             uart_transmit('S');
             uart_transmit('p');
-	    uart_transmit('o');
+	    	uart_transmit('o');
             uart_transmit('n');
             uart_transmit('g');
             uart_transmit('e');
@@ -180,7 +213,7 @@ void display()
             uart_transmit('t');
             uart_transmit('s');
 
-            delay(20000);
+            delay(100000);
             
             uart_transmit('O');
             uart_transmit('h');
@@ -189,7 +222,7 @@ void display()
             uart_transmit('W');
             uart_transmit('h');
             uart_transmit('o');
-            uart_transmit('');
+            uart_transmit(' ');
             uart_transmit('l');
             uart_transmit('i');
             uart_transmit('v');
@@ -252,7 +285,6 @@ void display()
 
           }
    
-        }	 
 
 }
 
@@ -352,99 +384,124 @@ void uart_transmit(char c)
   SBUF = c;
 }
 
-void tetris(){
+void tetris()
+{
+	setTempo();
 	playnotetime(note_E4, 3*eighthNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_B3, eighthNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_C4, quarterNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_D4, eighthNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_B3, 3*eighthNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_A3, eighthNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_A3, quarterNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~sponge || ~pia)
+		return;
 	playnotetime(note_E4, eighthNote);
 	
 	
 }
+
 
 void playnotetime(int note, unsigned int n)
 {
   unsigned int z = n;
   int i;
   playNote(note);
-  LED1 = 0;
   while(z-- > 0)
   {
 	for(i = 0; i < 250; i++);
   }
-  LED1 = 1;
   stopNote();
 }
 
-void main() 
-{
-  P2M1 = 0x00;
-  P1M1 = 0x00;
-  P0M1 = 0x00;
-
-  TMOD = 0x11;
-  IEN1 = 0x88;
-
-  while(1);
-  {
-    if (tetris == 0)
-    {
-      while (tetris == 0 && sponge == 1 && piano == 1)
-      {
-        display();
-        tetris();
-      }
-    }
-    if (sponge == 0)
-    {
-      while (sponge == 0 && tetris == 1 && piano == 1)
-      {
-      	display();
-        sponge();
-      }
-    }
-    if (keybrd == 0)
-    {
-      while (tetris == 1 && sponge == 1)
-      {
-        piano();
-      }
-    }
-  }
-}
 
 void spongebob()
 {
-	setTempo(120);
-	playnotetime(note_D4b, quarterNote);
-	playnotetime(note_D4b, quarterNote);
-	playnotetime(note_D4b, quarterNote);
+	setTempo();
+	playnotetime(note_D4b, 3*quarterNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_D4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_D4s, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_A3, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_F3, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_A3, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_D4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_A3, quarterNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_F4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_E4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_F4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_D4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_D4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_C4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_A3, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_F4, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_A3, eighthNote);
+	if(~tetr || ~pia)
+		return;
 	playnotetime(note_F4, eighthNote);
 }
 
@@ -453,6 +510,4 @@ void setTempo()
   wholeNote = 4 * quarterNote;
   halfNote = 2 * quarterNote;
   eighthNote = quarterNote / 2;
- }
-
-
+}
