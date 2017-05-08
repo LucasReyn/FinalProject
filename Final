@@ -121,18 +121,18 @@ void main()
   	if(~tetr) //checks for tetris button 
 	{
 		
-		display();
+		display(); // displays title
 
-		tetris();
+		tetris(); // goes to tetris tune
 	}
 
 	if(~sponge) // checks for spongebob song button
 	{
-		display();
+		display(); // displays title
 
-		spongebob();
+		spongebob(); // goes to spongebob tune
 	}
-  	piano();
+  	piano(); // piano function
   }
 }
 
