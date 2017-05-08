@@ -65,6 +65,15 @@ void main()
   
   while(1)
   {
+  	LED1 = 1;
+	LED2 = 1;
+	LED3 = 1;
+	LED4 = 1;
+	LED5 = 1;
+	LED6 = 1;
+	LED7 = 1;
+	LED8 = 1;
+	LED9 = 1;
     
   	if(~tetr)
 	{
@@ -386,37 +395,113 @@ void uart_transmit(char c)
 
 void tetris()
 {
+	LED1 = 1;
+	LED2 = 1;
+	LED3 = 1;
+	LED4 = 1;
+	LED5 = 1;
+	LED6 = 1;
+	LED7 = 1;
+	LED8 = 1;
+	LED9 = 1;
 	setTempo();
-	playnotetime(note_E4, 3*eighthNote);
+	playnotetime(note_E4, quarterNote);
 	if(~sponge || ~pia)
+		
 		return;
 	playnotetime(note_B3, eighthNote);
 	if(~sponge || ~pia)
-		return;
-	playnotetime(note_C4, quarterNote);
-	if(~sponge || ~pia)
-		return;
-	playnotetime(note_D4, eighthNote);
-	if(~sponge || ~pia)
+		
 		return;
 	playnotetime(note_C4, eighthNote);
 	if(~sponge || ~pia)
+		
 		return;
-	playnotetime(note_B3, 3*eighthNote);
+	LED7 = 0;
+	playnotetime(note_D4, quarterNote);
 	if(~sponge || ~pia)
+		
+		return;
+	playnotetime(note_C4, eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	playnotetime(note_B3, eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	LED7 = 1;
+	LED4 = 0;
+	playnotetime(note_A3, quarterNote);
+	if(~sponge || ~pia)
+		
 		return;
 	playnotetime(note_A3, eighthNote);
 	if(~sponge || ~pia)
-		return;
-	playnotetime(note_A3, quarterNote);
-	if(~sponge || ~pia)
+		
 		return;
 	playnotetime(note_C4, eighthNote);
 	if(~sponge || ~pia)
+		
 		return;
-	playnotetime(note_E4, eighthNote);
-	
-	
+	LED4 = 1;
+	LED1 = 0;
+	LED9 = 0;
+	playnotetime(note_E4, quarterNote);
+	if(~sponge || ~pia)
+		
+		return;
+	playnotetime(note_D4, eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	playnotetime(note_C4, eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	LED9 = 1;
+	LED6 = 0;
+	playnotetime(note_B3, 3*eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	playnotetime(note_C4, eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	LED6 = 1;
+	LED3 = 0;
+	LED8 = 0;
+	playnotetime(note_D4, 2*eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	playnotetime(note_E4, 2*eighthNote);
+	if(~sponge || ~pia)
+		
+		return;
+	LED8 = 1;
+	LED5 = 0;
+	playnotetime(note_C4, quarterNote);
+	if(~sponge || ~pia)
+		
+		return;
+	LED5 = 1;
+	LED2 = 0;
+	playnotetime(note_A3, quarterNote);
+	if(~sponge || ~pia)
+		
+		return;
+	LED1 = 1;
+	LED2 = 1;
+	LED3 = 1;
+	playnotetime(note_A3, 2*quarterNote);
+	if(~sponge || ~pia)
+		
+		return;
+	LED1 = 0;
+	LED2 = 0;
+	LED3 = 0;	
 }
 
 
