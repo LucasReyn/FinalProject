@@ -48,6 +48,7 @@ void playnotetime(int note,unsigned int n);
 void tetris();
 void setTempo();
 void spongebob();
+void displayBPM();
 
 void TIMR1ISR() interrupt 3
 {
@@ -61,7 +62,7 @@ void TIMR1ISR() interrupt 3
 
 void playNote(int note)
 {
-	IEN0 = 0x8A;
+
 	TMOD = 0x10;
 	globalNote = note;
 	TH1 = -(note>>8);
@@ -72,7 +73,6 @@ void playNote(int note)
 
 void stopNote()
 {
-	IEN0 = 0x00;
 	TR1 = 0;
 	TF1 = 0;
 	wave = 1;
@@ -136,73 +136,63 @@ void main()
   P2M1 = 0x00;
   P1M1 = 0x00;
   P0M1 = 0x00;
-  
-  if (beats == 0)
+  IEN0 = 0x8D;
+  IP = 0x05;
+  while(1);
   {
-    if (inc == 0)
-	{
-	 // display(XXX);
+   piano();
+    if (beats == 0)
+    {
+      if (inc == 0)
+      {
+	  displayBPM();
 	  quarterNote = 450;
 	  setTempo();
-      inc++;
-	}
-	else if ( inc == 1)
-	{
-	 // display(XXX);
+          inc++;
+      }
+      else if ( inc == 1)
+      {
+	  display();
 	  quarterNote = (130/120) * 450;
 	  setTempo();
-      inc++;
+          inc++;
 	}
-	else if (inc == 2)
-	{
-	  //display(XXX);
-	  quarterNote = (140/120) * 450;
-	  setTempo();
-	  inc++;
-	}
-	else if (inc == 3)
-	{
-	  //display(XXX);
+      else if (inc == 2)
+      {
+        displayBPM();
+        quarterNote = (140/120) * 450;
+        setTempo();
+        inc++;
+      }
+      else if (inc == 3)
+      {
+	  displayBPM();
 	  quarterNote = (150/120) * 450;
 	  setTempo();
 	  inc++;
-	}
-	else if (inc == 4)
-	{
-	  //display(XXX);
+       }
+      else if (inc == 4)
+      {
+	  displayBPM();
 	  quarterNote = (100/120) * 450;
 	  setTempo();
 	  inc++;
-	}
-	else if (inc == 5)
-	{
-	  //display(XXX);
+      }
+      else if (inc == 5)
+      {
+	  displayBPM();
 	  quarterNote = (110/120) * 450;
 	  inc = 0;
-	}
-  }
-  while(1);
-  {
+      }
+    }
     if (t_sw == 0)
     {
-      while (s_sw != 0 && p_sw != 0)
-      {       
-        tetris();
-      }
+      tetris();   
     }
     if (s_sw == 0)
     {
-      while (t_sw != 0 && p_sw != 0)
-      {
+      
         spongebob();
-      }
-    }
-    if (p_sw == 0)
-    {
-      while (t_sw != 0 && s_sw != 0)
-      {
-        piano();
-      }
     }
   }
 }
@@ -243,3 +233,71 @@ void setTempo()
   halfNote = 2 * quarterNote;
   eighthNote = quarterNote / 2;
 }
+void displayBPM()
+{
+ 
+	uart_init();
+
+	while (1)
+        {
+         if (inc == 0)
+          {
+            uart_transmit('1');
+            uart_transmit('2');
+	    uart_transmit('0');
+            uart_transmit('B');
+            uart_transmit('P');
+            uart_transmit('M');
+	      while (inc == 0);
+
+          }
+	  if (inc == 1)
+	  {
+	    uart_transmit('1');
+            uart_transmit('3');
+	    uart_transmit('0');
+            uart_transmit('B');
+            uart_transmit('P');
+            uart_transmit('M');
+	      while (inc == 1);
+	  }
+	  if (inc == 2 )
+	  {
+	    uart_transmit('1');
+            uart_transmit('4');
+	    uart_transmit('0');
+            uart_transmit('B');
+            uart_transmit('P');
+            uart_transmit('M');
+	      while (inc == 2);
+	  }
+	  if (inc == 3 )
+	  {
+	    uart_transmit('1');
+            uart_transmit('5');
+	    uart_transmit('0');
+            uart_transmit('B');
+            uart_transmit('P');
+            uart_transmit('M');
+	      while (inc==1);
+	  }
+	  if (inc == 4)
+	  {
+	    uart_transmit('1');
+            uart_transmit('0');
+	    uart_transmit('0');
+            uart_transmit('B');
+            uart_transmit('P');
+            uart_transmit('M');
+	      while (inc == 4);
+	  }
+	  if (inc == 5 )
+	  {
+	    uart_transmit('1');
+            uart_transmit('1');
+	    uart_transmit('0');
+            uart_transmit('B');
+            uart_transmit('P');
+            uart_transmit('M');
+	      while (inc == 5);
+	  }
