@@ -238,8 +238,8 @@ void displayBPM()
  
 	uart_init();
 
-	while (1)
-        {
+	
+
          if (inc == 0)
           {
             uart_transmit('1');
@@ -301,3 +301,4 @@ void displayBPM()
             uart_transmit('M');
 	      while (inc == 5);
 	  }
+}
