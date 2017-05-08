@@ -10,11 +10,6 @@ sbit sw2 = P0^3;
 sbit sw3 = P2^2;
 sbit swMid = P1^4;
 sbit wave = P1^7;
-/*sbit LED1 = P2^5;
-sbit LED2 = P0^7;
-sbit LED3 = P2^6;
-sbit LED4 = P1^6;
-sbit LED5 = P0^4;*/
 sbit LED1 = P2^5;
 sbit LED2 = P0^7;
 sbit LED3 = P2^6;
@@ -97,11 +92,11 @@ void main()
 	if (~beats) //checks for change in speed button
     {
 
-			if (inc == 0)
+			if (inc == 0) 
 			{
-				displayBPM();
-				quarterNote = 450;
-				setTempo();
+				displayBPM(); // display normal
+				quarterNote = 450; // quarternote at normal speed
+				setTempo(); // 
 				inc++;
 
 			}
