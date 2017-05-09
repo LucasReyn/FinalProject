@@ -232,23 +232,23 @@ void piano()
 void display()
 {
 
-	uart_init();
+	uart_init(); //calls uart_init
 
 
         
-    if (tetr == 0)
+    if (tetr == 0) //when the tetris button is pushed
     {
-        uart_transmit('T');
+        uart_transmit('T'); //displays tetris
         uart_transmit('e');
 	    uart_transmit('t');
         uart_transmit('r');
         uart_transmit('i');
         uart_transmit('s');
-	    while (tetr==0);
+	    while (tetr==0); 
      }
-	 if (sponge == 0)
+	 if (sponge == 0) //when spongebob button is pushed
 	  {
-            uart_transmit('S');
+            uart_transmit('S'); //displays spongebob
             uart_transmit('p');
 	    	uart_transmit('o');
             uart_transmit('n');
@@ -270,9 +270,9 @@ void display()
             uart_transmit('t');
             uart_transmit('s');
 
-            delay(100000);
+            delay(100000); //delays before transmitting the lyrics
             
-            uart_transmit('O');
+            uart_transmit('O'); //displays lyrics
             uart_transmit('h');
 	    uart_transmit('!');
             uart_transmit(' ');
@@ -352,11 +352,11 @@ void uart_init
 {
   // configure UART
   // clear SMOD0
-  PCON &= ~0x40;
-  SCON = 0x50;
+  PCON &= ~0x40; //00000100
+  SCON = 0x50; //00000101
   // set or clear SMOD1
-  PCON &= 0x7f;
-  PCON |= (0 << 8);
+  PCON &= 0x7f; //011111111
+  PCON |= (0 << 8); 
   SSTAT = 0x00;
 
   // enable break detect
