@@ -10,8 +10,8 @@ sbit sw2 = P0^3;
 sbit sw3 = P2^2;
 sbit swMid = P1^4;
 sbit wave = P1^7;
-sbit LED1 = P2^5;
-sbit LED2 = P0^7;
+sbit LED1 = P2^5;	//bottom row left led(yellow)		
+sbit LED2 = P0^7;	//bottom row middle led 
 sbit LED3 = P2^6;
 sbit LED4 = P0^6;
 sbit LED5 = P1^6;
@@ -447,8 +447,9 @@ void uart_transmit(char c)
 //turns on LED per each note
 void tetris()
 {
-	LED1 = 1;
-	LED2 = 1;
+	//turn all LED off
+	LED1 = 1;	// led 1 is 
+	LED2 = 1;	
 	LED3 = 1;
 	LED4 = 1;
 	LED5 = 1;
@@ -460,14 +461,12 @@ void tetris()
 	LEDe = 0;
 	playnotetime(note_E4, quarterNote);
 	LEDe = 1;
-	if(~sponge || ~pia)
-		
+	if(~sponge || ~pia)	//Stop TETRIS when either piano button or spongebob button is pressed
 		return;
 	LEDb = 0;
 	playnotetime(note_B3, eighthNote);
 	LEDb = 1;
 	if(~sponge || ~pia)
-		
 		return;
 	LEDc = 0;
 	playnotetime(note_C4, eighthNote);
