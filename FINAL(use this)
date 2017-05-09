@@ -1,1 +1,781 @@
+#include <reg932.h>
 
+sbit tetr = P2^0;
+sbit sponge = P0^2;
+sbit pia = P0^1;
+sbit beats = P2^3;
+
+sbit sw1 = P2^1;
+sbit sw2 = P0^3;
+sbit sw3 = P2^2;
+sbit swMid = P1^4;
+sbit wave = P1^7;
+sbit LED1 = P2^5;
+sbit LED2 = P0^7;
+sbit LED3 = P2^6;
+sbit LED4 = P0^6;
+sbit LED5 = P1^6;
+sbit LED6 = P0^4;
+sbit LED7 = P2^4;
+sbit LED8 = P0^5;
+sbit LED9 = P2^7;
+sbit LEDa = P1^2;
+sbit LEDb = P1^3;
+sbit LEDc = P2^2;
+sbit LEDd = P2^1;
+sbit LEDe = P1^4;
+sbit LEDf = P0^0;
+static bit mtxbusy;
+sbit testLED = P2^7;
+
+
+#define note_A4 2095
+#define note_C5 1761
+#define note_D5 1569
+#define note_C4 3523
+#define note_D4 3138
+#define note_E4 2796
+#define note_F4 2639
+#define note_F3 5278
+#define note_D4b 3325
+#define note_D4s 2962
+#define note_A5 1047
+#define note_B5 933
+#define note_C6 881
+#define note_D6 785
+#define note_E6 699
+#define note_B3 3954
+#define note_A3 4189
+
+unsigned int quarterNote = 450;
+unsigned int wholeNote;
+unsigned int halfNote;
+unsigned int eighthNote;
+unsigned int note_test;
+int globalNote = 0;
+int inc;
+char globalCount; // for piano chord selection
+
+void spongebob();
+void playNote(int note);
+void stopNote();
+void piano();
+void display();
+void uart_transmit(char c);
+void playnotetime(int note,int n);
+void tetris();
+void setTempo();
+unsigned char uart_get(void);
+void uart_init(void);
+void delay(long x);
+void displayBPM();
+
+void main()
+{
+  P2M1 = 0x00;
+  P1M1 = 0x00;
+  P0M1 = 0x00;
+  IEN0 = 0x8A;
+  inc = 0;
+  while(1) //checks for button continously
+  {
+  	LED1 = 1;
+	LED2 = 1;
+	LED3 = 1;
+	LED4 = 1;
+	LED5 = 1;
+	LED6 = 1;
+	LED7 = 1;
+	LED8 = 1;
+	LED9 = 1;
+    
+	if (~beats) //checks for change in speed button
+    {
+
+			if (inc == 0) 
+			{
+				displayBPM(); // display normal
+				quarterNote = 450; // quarternote at normal speed
+				setTempo(); // resets tempo
+				inc++;
+
+			}
+			else if ( inc == 1)
+			{
+				displayBPM(); // display slower
+				quarterNote = 900; // quarternote is slwoer
+				setTempo(); //resets tempo
+				inc++;
+			}
+			else if (inc == 2)
+			{
+				displayBPM(); // display faster
+				quarterNote = 300; // quarternote is faster
+				setTempo(); // resets tempo
+				inc = 0; // makes inc reset to 0
+			}
+		   while (~beats); // checks for beat button value
+	  
+	}
+
+  	if(~tetr) //checks for tetris button 
+	{
+		
+		display(); // displays title
+
+		tetris(); // goes to tetris tune
+	}
+
+	if(~sponge) // checks for spongebob song button
+	{
+		display(); // displays title
+
+		spongebob(); // goes to spongebob tune
+	}
+  	piano(); // piano function
+  }
+}
+
+//timer 1 interrupt routine for note frequency
+void TIMR1ISR() interrupt 3
+{
+	TR1 = 0;
+	wave = ~wave;
+	TH1 = -(globalNote>>8);
+	TL1 = -globalNote;
+	TF1 = 0;
+	TR1 = 1;
+}
+
+//plays note based on frequency given
+void playNote(int note)
+{
+	IEN0 = 0x8A;
+	TMOD = 0x10;
+	globalNote = note;
+	TH1 = -(note>>8);
+	TL1 = -note;
+	TR1 = 1;
+}
+
+//stops any note playing
+void stopNote()
+{
+	IEN0 = 0x00;
+	TR1 = 0;
+	TF1 = 0;
+	wave = 1;
+}
+
+//plays notes using buttons
+void piano()
+{
+	unsigned int mod1;
+	unsigned int mod2;
+	unsigned int mod3;
+	if(swMid == 0)
+	{
+		if(globalCount == 0)
+		{
+			LED4 = ~LED4;
+			mod1+= 256; // changes A4 to G4
+			mod2+= 216; // changes C4 to A4#
+			mod3+= 192; // changes D5 to C5
+			globalCount++;
+		}
+		else if(globalCount < 4)
+		{
+			LED5 = ~LED5;
+			mod1 += 3000;
+			mod2 += 4000;
+			mod3 += 5000;
+			globalCount++;
+		}
+		else
+		{
+			LED4 = 1;
+			LED5 = 1;
+			mod1 = 0;
+			mod2 = 0;
+			mod3 = 0;
+			globalCount = 0;
+		}
+		while(swMid == 0);
+	}
+	if(sw1 == 0)
+	{
+		LED1 = 0;
+		playNote(note_A4+mod1);
+		while(sw1 == 0);
+		LED1 = 1;
+	}
+	if(sw2 == 0)
+	{
+		LED2 = 0;
+		playNote(note_C5+mod2);
+		while(sw2 == 0);
+		LED2 = 1;
+	}
+
+	if(sw3 == 0)
+	{
+		LED3 = 0;
+		playNote(note_D5+mod3);
+		while(sw3 == 0);
+		LED3 = 1;
+	}
+	else
+		stopNote();
+}
+
+//display the title of each song and the lyrics for spongebob theme
+void display()
+{
+
+	uart_init();
+
+
+        
+    if (tetr == 0)
+    {
+        uart_transmit('T');
+        uart_transmit('e');
+	    uart_transmit('t');
+        uart_transmit('r');
+        uart_transmit('i');
+        uart_transmit('s');
+	    while (tetr==0);
+     }
+	 if (sponge == 0)
+	  {
+            uart_transmit('S');
+            uart_transmit('p');
+	    	uart_transmit('o');
+            uart_transmit('n');
+            uart_transmit('g');
+            uart_transmit('e');
+            uart_transmit('B');
+            uart_transmit('o');
+            uart_transmit('b');
+            uart_transmit(' ');
+            uart_transmit('S');
+            uart_transmit('q');
+            uart_transmit('u');
+            uart_transmit('a');
+            uart_transmit('r');
+            uart_transmit('e');
+            uart_transmit('p');
+            uart_transmit('a');
+            uart_transmit('n');
+            uart_transmit('t');
+            uart_transmit('s');
+
+            delay(100000);
+            
+            uart_transmit('O');
+            uart_transmit('h');
+	    uart_transmit('!');
+            uart_transmit(' ');
+            uart_transmit('W');
+            uart_transmit('h');
+            uart_transmit('o');
+            uart_transmit(' ');
+            uart_transmit('l');
+            uart_transmit('i');
+            uart_transmit('v');
+	    uart_transmit('e');
+            uart_transmit('s');
+            uart_transmit(' ');
+            uart_transmit('i');
+            uart_transmit('n');
+            uart_transmit(' ');
+            uart_transmit('a');
+            uart_transmit(' ');
+            uart_transmit('p');
+	    uart_transmit('i');
+            uart_transmit('n');
+            uart_transmit('e');
+            uart_transmit('a');
+            uart_transmit('p');
+            uart_transmit('p');
+            uart_transmit('l');
+            uart_transmit('e');
+            uart_transmit(' ');
+	    uart_transmit('u');
+            uart_transmit('n');
+            uart_transmit('d');
+            uart_transmit('e');
+            uart_transmit('r');
+            uart_transmit(' ');
+            uart_transmit('t');
+            uart_transmit('h');
+            uart_transmit('e');
+	    uart_transmit(' ');
+            uart_transmit('s');
+            uart_transmit('e');
+            uart_transmit('a');
+            uart_transmit(' ');
+            uart_transmit('S');
+            uart_transmit('p');
+	    uart_transmit('o');
+            uart_transmit('n');
+            uart_transmit('g');
+            uart_transmit('e');
+            uart_transmit('B');
+            uart_transmit('o');
+            uart_transmit('b');
+            uart_transmit(' ');
+            uart_transmit('S');
+            uart_transmit('q');
+            uart_transmit('u');
+            uart_transmit('a');
+            uart_transmit('r');
+            uart_transmit('e');
+            uart_transmit('p');
+            uart_transmit('a');
+            uart_transmit('n');
+            uart_transmit('t');
+            uart_transmit('s');
+
+           
+	    while (sponge==0);
+
+          }
+   
+
+}
+
+void uart_init
+  (
+  void
+  )
+{
+  // configure UART
+  // clear SMOD0
+  PCON &= ~0x40;
+  SCON = 0x50;
+  // set or clear SMOD1
+  PCON &= 0x7f;
+  PCON |= (0 << 8);
+  SSTAT = 0x00;
+
+  // enable break detect
+  AUXR1 |= 0x40;
+
+  // configure baud rate generator
+  BRGCON = 0x00;
+  BRGR0 = 0xF0;
+  BRGR1 = 0x02;                      //BRGR0 and BRGR1 were
+  BRGCON = 0x03;                     //changed to set the baud rate to 9600
+
+  // TxD = push-pull, RxD = input
+  P1M1 &= ~0xfe;
+  P1M1 |= 0x02;
+  P1M2 &= ~0xfd;
+  P1M2 |= 0x01;
+  
+  
+
+  // initially not busy
+  mtxbusy = 0;
+
+  // set isr priority to 0
+  IP0 |= 0x10;
+  IP0H |= 0x10;
+  // enable uart interrupt
+  ES = 1;
+  EA = 1;
+
+} // uart_init
+
+//delay in between spongebob title and lyrics
+void delay(long x)
+{	
+	long i= 0;
+	for(i;i<x;i++);
+
+}
+
+void uart_isr(void) interrupt 4 using 1
+{
+  if (RI)
+  {
+            // PUT CODE THAT EXECUTES WHEN RECEIVING A BYTE HERE
+	 char letter = uart_get();
+     if (letter == 's')
+	  {
+        spongebob();
+	  }
+
+	  if (letter == 't')
+	  {
+        tetris();
+	  }	  
+     
+    // clear interrupt flag
+    RI = 0;
+  } // if
+
+  if (TI)
+  {
+    // clear interrupt flag
+    TI = 0;
+    // no longer busy
+    mtxbusy = 0;
+  } // if
+
+} // uart_isr
+ 
+
+unsigned char uart_get   
+(  
+ void   
+) 
+{   
+return SBUF; 
+} // uart_get
+
+void uart_transmit(char c)
+{
+  while(mtxbusy);
+  mtxbusy = 1;
+  SBUF = c;
+}
+
+//function that calls playnottime multiple times 
+//to play the each note for a duration of the tetris theme song
+//turns on LED per each note
+void tetris()
+{
+	LED1 = 1;
+	LED2 = 1;
+	LED3 = 1;
+	LED4 = 1;
+	LED5 = 1;
+	LED6 = 1;
+	LED7 = 1;
+	LED8 = 1;
+	LED9 = 1;
+	setTempo();
+	LEDe = 0;
+	playnotetime(note_E4, quarterNote);
+	LEDe = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDb = 0;
+	playnotetime(note_B3, eighthNote);
+	LEDb = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED7 = 0;
+	LEDd = 0;
+	playnotetime(note_D4, quarterNote);
+	LEDd = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~sponge || ~pia || ~beats)
+		
+		return;
+	LEDb = 0;
+	playnotetime(note_B3, eighthNote);
+	LEDb = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED7 = 1;
+	LED4 = 0;
+	LEDa = 0;
+	playnotetime(note_A3, quarterNote);
+	LEDa = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDa = 0;
+	playnotetime(note_A3, eighthNote);
+	LEDa = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED4 = 1;
+	LED1 = 0;
+	LED9 = 0;
+	LEDe = 0;
+	playnotetime(note_E4, quarterNote);
+	LEDe = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDd = 0;
+	playnotetime(note_D4, eighthNote);
+	LEDd = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED9 = 1;
+	LED6 = 0;
+	LEDb = 0;
+	playnotetime(note_B3, 3*eighthNote);
+	LEDb = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+    LEDc = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED6 = 1;
+	LED3 = 0;
+	LED8 = 0;
+	LEDd  = 0;
+	playnotetime(note_D4, 2*eighthNote);
+	LEDd = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LEDe = 0;
+	playnotetime(note_E4, 2*eighthNote);
+	LEDe = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED8 = 1;
+	LED5 = 0;
+	LEDc = 0;
+	playnotetime(note_C4, quarterNote);
+	LEDc = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED5 = 1;
+	LED2 = 0;
+	LEDa = 0;
+	playnotetime(note_A3, quarterNote);
+	LEDa = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED1 = 1;
+	LED2 = 1;
+	LED3 = 1;
+	LEDa = 0;
+	playnotetime(note_A3, 2*quarterNote);
+	LEDa = 1;
+	if(~sponge || ~pia)
+		
+		return;
+	LED1 = 0;
+	LED2 = 0;
+	LED3 = 0;	
+}
+
+//plays a note with the duration given 
+void playnotetime(int note, unsigned int n)
+{
+  unsigned int z = n;
+  int i;
+  playNote(note);
+  while(z-- > 0)
+  {
+	for(i = 0; i < 250; i++);
+  }
+  stopNote();
+}
+
+//function that calls playnottime multiple times 
+//to play the each note for a duration of the spongebob theme song
+//turns on LED per each note
+void spongebob()
+{
+
+	uart_init();
+
+	setTempo();
+	LEDd = 0;
+	playnotetime(note_D4b, 3*quarterNote);
+	LEDd = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDd = 0;
+	playnotetime(note_D4, eighthNote);
+
+	LEDd = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDd = 0;
+	playnotetime(note_D4s, eighthNote);
+	LEDd = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc =1;
+	if(~tetr || ~pia)
+		return;
+	LEDa = 0;
+	playnotetime(note_A3, eighthNote);
+	LEDa = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDf = 0;
+	playnotetime(note_F3, eighthNote);
+	LEDf = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDa = 0;
+	playnotetime(note_A3, eighthNote);
+	LEDa = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDd = 0;
+	playnotetime(note_D4, eighthNote);
+	LEDd = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDa = 0;
+	playnotetime(note_A3, quarterNote);
+	LEDa = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDf = 0;
+	playnotetime(note_F4, eighthNote);
+	LEDf = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDe = 0;
+	playnotetime(note_E4, eighthNote);
+	LEDe = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDf = 0;
+	playnotetime(note_F4, eighthNote);
+	LEDf = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDd = 0;
+	playnotetime(note_D4, eighthNote);
+	LEDd = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+	LEDc = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDd = 0;
+	playnotetime(note_D4, eighthNote);
+	LEDd = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDc = 0;
+	playnotetime(note_C4, eighthNote);
+    LEDc = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDa = 0;
+	playnotetime(note_A3, eighthNote);
+	LEDa = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDf = 0;
+	playnotetime(note_F4, eighthNote);
+	LEDf = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDa = 0;
+	playnotetime(note_A3, eighthNote);
+	LEDa = 1;
+	if(~tetr || ~pia)
+		return;
+	LEDf = 0;
+	playnotetime(note_F4, eighthNote);
+	LEDf = 1;
+}
+// set tempo function that changes the note duration based on speed given
+void setTempo()
+{
+  wholeNote = 4 * quarterNote;
+  halfNote = 2 * quarterNote;
+  eighthNote = quarterNote / 2;
+}
+
+//display if the song will go faster, slower, or normal
+void displayBPM()
+{
+ 
+	uart_init();
+
+	
+
+	if (inc == 0)
+	{
+        uart_transmit('N');
+        uart_transmit('O');
+		uart_transmit('R');
+        uart_transmit('M');
+        uart_transmit('A');
+        uart_transmit('L');
+	
+    }
+	else if (inc == 1)
+	{
+	    uart_transmit('S');
+        uart_transmit('L');
+        uart_transmit('O');
+        uart_transmit('W');
+        uart_transmit('E');
+        uart_transmit('R');
+
+	}
+	else if (inc == 2 )
+	{
+		uart_transmit('F');
+        uart_transmit('A');
+        uart_transmit('S');
+        uart_transmit('T');
+		uart_transmit('E');
+        uart_transmit('R');
+	
+	}
+
+}
